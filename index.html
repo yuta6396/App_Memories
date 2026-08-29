@@ -7,7 +7,12 @@
       content="width=device-width, initial-scale=1, viewport-fit=cover"
     />
     <meta name="color-scheme" content="light" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
     <title>Our Memories</title>
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    />
     <link rel="stylesheet" href="css/app.css" />
   </head>
   <body>
@@ -48,18 +53,134 @@
         <button type="button" id="denied-back-button">ログイン画面へ</button>
       </section>
 
-      <section id="view-main" class="view" hidden>
-        <h1>Our Memories</h1>
-        <p>Logged in</p>
-        <p id="main-user" class="muted"></p>
-        <button type="button" id="logout-button">Logout</button>
+      <section id="view-main" class="view view-main" hidden>
+        <header class="main-header">
+          <div>
+            <h1>Our Memories</h1>
+            <p id="main-user" class="muted"></p>
+          </div>
+          <button type="button" id="logout-button">Logout</button>
+        </header>
+
+        <p id="main-error" class="error" hidden></p>
+
+        <div id="panel-map" class="app-panel" hidden>
+          <div id="main-map" class="main-map" role="application" aria-label="思い出マップ"></div>
+        </div>
+
+        <div id="panel-timeline" class="app-panel" hidden>
+          <div id="visited-list"></div>
+        </div>
+
+        <div id="panel-wishlist" class="app-panel" hidden>
+          <div id="wishlist-list"></div>
+        </div>
+
+        <div id="panel-add" class="app-panel" hidden>
+          <form id="entry-form" autocomplete="off" novalidate>
+            <h2 id="entry-form-title">Add</h2>
+
+            <fieldset class="choice-row">
+              <legend>status</legend>
+              <label>
+                <input type="radio" name="status" value="visited" checked />
+                visited
+              </label>
+              <label>
+                <input type="radio" name="status" value="wishlist" />
+                wishlist
+              </label>
+            </fieldset>
+
+            <label for="entry-title">title</label>
+            <input id="entry-title" name="title" type="text" required />
+
+            <label for="entry-place">place_name</label>
+            <input id="entry-place" name="place_name" type="text" />
+
+            <label for="entry-lat">latitude</label>
+            <input
+              id="entry-lat"
+              name="latitude"
+              type="text"
+              inputmode="decimal"
+              placeholder="-90 〜 90"
+            />
+
+            <label for="entry-lng">longitude</label>
+            <input
+              id="entry-lng"
+              name="longitude"
+              type="text"
+              inputmode="decimal"
+              placeholder="-180 〜 180"
+            />
+
+            <button type="button" id="geo-button" class="secondary">
+              現在地を取得
+            </button>
+
+            <p class="muted">地図から場所を選ぶ</p>
+            <div id="picker-map" class="picker-map"></div>
+
+            <div id="visited-on-wrap">
+              <label for="entry-visited-on">visited_on</label>
+              <input id="entry-visited-on" name="visited_on" type="date" />
+            </div>
+
+            <label for="entry-memo">memo</label>
+            <textarea id="entry-memo" name="memo" rows="4"></textarea>
+
+            <label for="entry-photos">photos</label>
+            <input
+              id="entry-photos"
+              name="photos"
+              type="file"
+              accept="image/*"
+              multiple
+            />
+            <p class="muted">
+              JPEG / PNG など。既存の項目を編集すると写真を追加できます。
+            </p>
+
+            <p id="entry-error" class="error" hidden></p>
+
+            <button type="submit" id="entry-save-button">保存</button>
+            <button
+              type="button"
+              id="entry-cancel-button"
+              class="secondary"
+              hidden
+            >
+              キャンセル
+            </button>
+          </form>
+        </div>
+
+        <nav id="main-nav" class="bottom-nav" aria-label="メイン">
+          <button type="button" data-screen="map">Map</button>
+          <button type="button" data-screen="timeline">Timeline</button>
+          <button type="button" data-screen="wishlist">Wishlist</button>
+          <button type="button" data-screen="add">Add</button>
+        </nav>
       </section>
     </div>
 
+    <div id="photo-lightbox" class="lightbox" hidden>
+      <button type="button" id="lightbox-close" class="lightbox-close">
+        閉じる
+      </button>
+      <img id="lightbox-image" alt="" />
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="js/config.js"></script>
     <script src="js/client.js"></script>
     <script src="js/auth.js"></script>
+    <script src="js/entries.js"></script>
+    <script src="js/photos.js"></script>
+    <script src="js/map.js"></script>
     <script src="js/app.js"></script>
   </body>
 </html>
